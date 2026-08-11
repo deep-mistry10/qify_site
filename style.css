@@ -1,0 +1,1048 @@
+/* =========================================================
+   QIFY QR GENERATOR
+   Modern UI
+   ========================================================= */
+
+:root {
+    --bg: #f5f7fb;
+    --surface: rgba(255, 255, 255, 0.82);
+    --surface-solid: #ffffff;
+    --border: #e5e7eb;
+
+    --text: #111827;
+    --muted: #64748b;
+
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --primary-light: #eef2ff;
+
+    --success: #16a34a;
+    --danger: #ef4444;
+
+    --shadow-sm: 0 4px 15px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 12px 35px rgba(15, 23, 42, 0.09);
+    --shadow-lg: 0 25px 60px rgba(15, 23, 42, 0.12);
+
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+
+    --max-width: 1100px;
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: "Inter", Arial, sans-serif;
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(99, 102, 241, 0.10),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at top right,
+            rgba(59, 130, 246, 0.08),
+            transparent 30%
+        ),
+        var(--bg);
+    color: var(--text);
+    text-align: center;
+    line-height: 1.6;
+}
+
+img {
+    max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+button {
+    border: none;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px 24px;
+
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+}
+
+header > a {
+    display: inline-flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    color: var(--text);
+}
+
+.navigator-bar {
+    display: none;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 70px 20px 35px;
+}
+
+.heading {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(42px, 7vw, 70px);
+    line-height: 0.98;
+    letter-spacing: 0.5px;
+    color: #111827;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(38px, 6vw, 64px);
+}
+
+.hero .para {
+    max-width: 760px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   QR TYPE TABS
+   ========================================================= */
+
+.tabs {
+    width: min(100% - 32px, 950px);
+    margin: 10px auto 20px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+}
+
+.tabs button {
+    margin: 0;
+
+    padding: 11px 17px;
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.75);
+    color: #475569;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.tabs button:hover {
+    transform: translateY(-2px);
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    border-color: #c7d2fe;
+
+    box-shadow: var(--shadow-sm);
+}
+
+.tabs button:active {
+    transform: scale(0.97);
+}
+
+
+/* =========================================================
+   GENERATOR CONTAINER
+   ========================================================= */
+
+#form-container {
+    width: min(100% - 32px, 700px);
+
+    margin: 0 auto;
+
+    padding: 30px;
+
+    background: var(--surface);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+.form {
+    width: 100%;
+    margin-top: 0;
+}
+
+.form:first-child {
+    margin-top: 0;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+input,
+textarea,
+select {
+    width: 100%;
+
+    margin: 7px 0;
+
+    padding: 14px 15px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+
+    outline: none;
+
+    background: #ffffff;
+    color: var(--text);
+
+    font-size: 15px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #818cf8;
+
+    box-shadow:
+        0 0 0 4px rgba(99, 102, 241, 0.10);
+
+    background: #ffffff;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+
+/* =========================================================
+   GENERATE BUTTON
+   ========================================================= */
+
+.form button {
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 14px 20px;
+
+    border-radius: var(--radius-sm);
+
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        #6366f1
+    );
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(79, 70, 229, 0.20);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.form button:hover {
+    transform: translateY(-2px);
+
+    background: linear-gradient(
+        135deg,
+        var(--primary-dark),
+        var(--primary)
+    );
+
+    box-shadow:
+        0 12px 28px rgba(79, 70, 229, 0.25);
+}
+
+.form button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   WIFI
+   ========================================================= */
+
+#wifiSecurity {
+    appearance: none;
+    cursor: pointer;
+
+    background:
+        linear-gradient(45deg, transparent 50%, #64748b 50%) calc(100% - 18px) 50% / 6px 6px no-repeat,
+        linear-gradient(135deg, #64748b 50%, transparent 50%) calc(100% - 13px) 50% / 6px 6px no-repeat,
+        #fff;
+}
+
+.wifi-hidden {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin: 10px 0;
+
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.wifi-hidden input {
+    width: auto;
+    margin: 0;
+}
+
+
+/* =========================================================
+   URL ERROR
+   ========================================================= */
+
+.error-msg {
+    display: none;
+
+    margin: 4px 0 0;
+
+    color: var(--danger);
+
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+}
+
+input.invalid {
+    border-color: var(--danger);
+
+    box-shadow:
+        0 0 0 4px rgba(239, 68, 68, 0.08);
+}
+
+
+/* =========================================================
+   QR OUTPUT
+   ========================================================= */
+
+#qrcode-container {
+    width: min(100% - 32px, 700px);
+
+    margin: 35px auto 0;
+}
+
+#qrcode {
+    min-height: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: 20px auto;
+}
+
+#qrcode canvas {
+    max-width: min(100%, 320px);
+    height: auto !important;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================================
+   DOWNLOAD BUTTON
+   ========================================================= */
+
+#downloadBtn {
+    margin-top: 8px;
+
+    padding: 13px 24px;
+
+    border-radius: 999px;
+
+    background: #111827;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#downloadBtn:hover {
+    transform: translateY(-2px);
+
+    background: #020617;
+
+    box-shadow: var(--shadow-md);
+}
+
+#downloadBtn:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+
+/* =========================================================
+   UPI CARD
+   ========================================================= */
+
+.card {
+    width: min(350px, 92vw);
+
+    margin: 30px auto;
+
+    padding-bottom: 28px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+
+    box-shadow: var(--shadow-lg);
+}
+
+.card .header {
+    width: 100%;
+
+    padding: 20px 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fafc
+        );
+
+    color: #1e293b;
+
+    font-size: 21px;
+    font-weight: 800;
+
+    word-break: break-word;
+}
+
+#qr {
+    width: 220px;
+    height: 220px;
+
+    margin: 24px auto 16px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#qr canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.upi-text {
+    color: #475569;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    word-break: break-all;
+
+    padding: 0 20px;
+}
+
+.desc {
+    margin-top: 8px;
+
+    padding: 0 20px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+.logos-big {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 32px;
+
+    margin-top: 22px;
+}
+
+.logos-big img {
+    width: auto;
+    height: 34px;
+
+    object-fit: contain;
+}
+
+.logos-small {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 16px;
+
+    flex-wrap: wrap;
+
+    margin-top: 18px;
+
+    padding: 0 20px;
+}
+
+.logos-small img {
+    width: auto;
+    max-width: 65px;
+
+    height: 22px;
+
+    object-fit: contain;
+}
+
+.logos-small img:first-child {
+    height: 48px;
+}
+
+.message {
+    margin-top: 20px;
+
+    padding: 0 20px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.message p {
+    line-height: 1.5;
+}
+
+.QIFY {
+    margin-top: 4px;
+
+    color: var(--primary);
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FAQ
+   ========================================================= */
+
+.faq {
+    width: min(100% - 32px, 900px);
+
+    margin: 80px auto 0;
+
+    text-align: left;
+}
+
+.headeri {
+    margin-bottom: 35px;
+
+    font-family: "Bebas Neue", sans-serif;
+
+    font-size: clamp(38px, 6vw, 52px);
+
+    line-height: 1;
+
+    text-align: center;
+
+    color: var(--text);
+}
+
+.faq strong {
+    display: block;
+
+    margin-top: 28px;
+    margin-bottom: 8px;
+
+    font-size: 18px;
+    line-height: 1.4;
+
+    color: #1e293b;
+}
+
+.mini-heading {
+    display: inline;
+
+    font-size: 17px;
+    font-weight: 800;
+
+    color: #334155;
+}
+
+.paraqw {
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    color: #64748b;
+
+    font-size: 15px;
+    line-height: 1.85;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.site-footer {
+    margin-top: 90px;
+
+    padding: 30px 20px;
+
+    background: rgba(255, 255, 255, 0.65);
+
+    border-top: 1px solid rgba(15, 23, 42, 0.07);
+
+    color: #64748b;
+}
+
+.lastline {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 12px;
+}
+
+.links a {
+    color: #64748b;
+
+    font-size: 13px;
+
+    transition: color 0.2s ease;
+}
+
+.links a:hover {
+    color: var(--primary);
+}
+
+
+/* =========================================================
+   LEGACY PRIVACY / COOKIE STYLES
+   ========================================================= */
+
+.privacy-popup {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 99999;
+
+    background: rgba(15, 23, 42, 0.70);
+
+    backdrop-filter: blur(8px);
+}
+
+.privacy-box {
+    width: min(90%, 420px);
+
+    padding: 28px;
+
+    border-radius: 22px;
+
+    background: #111827;
+    color: white;
+
+    text-align: center;
+
+    box-shadow: var(--shadow-lg);
+}
+
+.privacy-box h2 {
+    margin-bottom: 10px;
+}
+
+.privacy-box p {
+    color: #cbd5e1;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.privacy-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.privacy-buttons button {
+    padding: 10px 20px;
+
+    border-radius: 10px;
+
+    background: var(--primary);
+    color: white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.privacy-buttons a {
+    color: #93c5fd;
+}
+
+
+/* =========================================================
+   COOKIE BANNER
+   ========================================================= */
+
+.cookie-banner {
+    position: fixed;
+
+    bottom: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(90%, 420px);
+
+    padding: 18px 20px;
+
+    z-index: 9999;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+
+    border-radius: 20px;
+
+    box-shadow: var(--shadow-lg);
+}
+
+.cookie-content {
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+.cookie-content p {
+    margin: 0;
+
+    color: #334155;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.cookie-content a {
+    color: var(--primary);
+
+    font-weight: 600;
+}
+
+.cookie-content button {
+    width: 100%;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    background: var(--primary);
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.cookie-content button:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .hero {
+        padding-top: 50px;
+    }
+
+    #form-container {
+        padding: 22px;
+    }
+
+    .faq {
+        margin-top: 60px;
+    }
+
+    .paraqw {
+        font-size: 14px;
+        line-height: 1.75;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+    header {
+        padding: 14px 18px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .hero {
+        padding: 45px 16px 25px;
+    }
+
+    .heading {
+        font-size: 46px;
+    }
+
+    .hero .para {
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .tabs {
+        width: calc(100% - 24px);
+
+        gap: 7px;
+    }
+
+    .tabs button {
+        padding: 9px 13px;
+
+        font-size: 12px;
+    }
+
+    #form-container {
+        width: calc(100% - 24px);
+
+        padding: 18px;
+
+        border-radius: 18px;
+    }
+
+    input,
+    textarea,
+    select {
+        padding: 13px;
+
+        font-size: 14px;
+    }
+
+    .form button {
+        padding: 13px;
+    }
+
+    #qrcode-container {
+        width: calc(100% - 24px);
+    }
+
+    .card {
+        width: min(340px, 94vw);
+    }
+
+    #qr {
+        width: 200px;
+        height: 200px;
+    }
+
+    .logos-big {
+        gap: 25px;
+    }
+
+    .logos-small {
+        gap: 12px;
+    }
+
+    .faq {
+        width: calc(100% - 28px);
+
+        margin-top: 55px;
+    }
+
+    .headeri {
+        font-size: 42px;
+    }
+
+    .faq strong {
+        font-size: 16px;
+    }
+
+    .paraqw {
+        font-size: 14px;
+    }
+
+    .site-footer {
+        margin-top: 65px;
+        padding: 25px 15px;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.35);
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
