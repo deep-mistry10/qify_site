@@ -1,3 +1,12 @@
+/* ==========================================
+   QIFY QR CODE GENERATOR
+========================================== */
+
+
+/* ==========================================
+   SHOW FORM
+========================================== */
+
 function showForm(type) {
 
     // Hide all forms
@@ -25,31 +34,39 @@ function showForm(type) {
         selectedTab.classList.add("active");
     }
 
-    // Reset normal QR preview
+    // Reset QR preview
     const qrContainer = document.getElementById("qrcode");
     const downloadBtn = document.getElementById("downloadBtn");
     const card = document.getElementById("card");
 
-    qrContainer.innerHTML = `
-    <div class="empty-state">
-        <div class="empty-qr">
-            <span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-        </div>
-        <strong>QR preview</strong>
-        <p>Your generated QR code will appear here.</p>
-    </div>
-`;
+    if (qrContainer) {
+        qrContainer.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-qr">
+                    <span></span><span></span><span></span>
+                    <span></span><span></span><span></span>
+                    <span></span><span></span><span></span>
+                </div>
 
-qrContainer.style.display = "flex";
+                <strong>QR preview</strong>
 
-    downloadBtn.style.display = "none";
+                <p>Your generated QR code will appear here.</p>
+            </div>
+        `;
+
+        qrContainer.style.display = "flex";
+    }
+
+    if (downloadBtn) {
+        downloadBtn.style.display = "none";
+    }
 
     // Hide UPI card
-    card.style.display = "none";
+    if (card) {
+        card.style.display = "none";
+    }
 
-    // Reset QR card
+    // Clear UPI QR
     const qrCard = document.getElementById("qr");
 
     if (qrCard) {
@@ -58,7 +75,10 @@ qrContainer.style.display = "flex";
 }
 
 
-// WiFi password visibility
+/* ==========================================
+   WIFI PASSWORD FIELD
+========================================== */
+
 function togglePasswordField() {
 
     const security = document.getElementById("wifiSecurity");
@@ -69,55 +89,125 @@ function togglePasswordField() {
     }
 
     if (security.value === "nopass") {
-
         passwordField.style.display = "none";
-
     } else {
-
         passwordField.style.display = "block";
-
     }
 }
 
 
-// Generate QR
+/* ==========================================
+   CREATE QR CODE
+========================================== */
+
+function createQRCode(container, data, options = {}) {
+
+    if (!container) {
+        console.error("QR container not found.");
+        return null;
+    }
+
+    if (typeof QRCodeStyling === "undefined") {
+        console.error("QRCodeStyling library was not loaded.");
+        alert("QR generator could not load. Please refresh the page.");
+        return null;
+    }
+
+    // Clear previous QR
+    container.innerHTML = "";
+
+    const qrCode = new QRCodeStyling({
+        width: options.width || 300,
+        height: options.height || 300,
+
+        type: "canvas",
+
+        data: data,
+
+        image: options.image || undefined,
+
+        imageOptions: {
+            crossOrigin: "anonymous",
+            margin: options.imageMargin || 5,
+            imageSize: options.imageSize || 0.25
+        },
+
+        dotsOptions: {
+            color: "#000000",
+            type: "square"
+        },
+
+        backgroundOptions: {
+            color: "#ffffff"
+        },
+
+        cornersSquareOptions: {
+            color: "#000000",
+            type: "square"
+        },
+
+        cornersDotOptions: {
+            color: "#000000",
+            type: "square"
+        }
+    });
+
+    // IMPORTANT:
+    // Append the QR library directly.
+    // Do not copy its canvas into another canvas.
+    qrCode.append(container);
+
+    return qrCode;
+}
+
+
+/* ==========================================
+   GENERATE QR
+========================================== */
+
 async function generateQR(type) {
 
     let qrData = "";
 
 
-    /*
-    ==========================================
-    URL
-    ==========================================
-    */
+    /* ==========================================
+       URL
+    ========================================== */
 
     if (type === "url") {
 
-        let url = document.getElementById("urlInput").value.trim();
-        const error = document.getElementById("urlError");
-        const input = document.getElementById("urlInput");
+        let url =
+            document.getElementById("urlInput").value.trim();
+
+        const error =
+            document.getElementById("urlError");
+
+        const input =
+            document.getElementById("urlInput");
+
 
         if (!url) {
 
-            error.style.display = "none";
+            if (error) {
+                error.style.display = "none";
+            }
+
             input.classList.remove("invalid");
 
             return;
         }
 
 
-        // Add http:// when protocol is not provided
+        // Add HTTP when protocol isn't supplied
         if (!/^https?:\/\//i.test(url)) {
-
-            url = "http://" + url;
-
+            url = "https://" + url;
         }
 
 
         try {
 
             const parsed = new URL(url);
+
             const host = parsed.hostname;
 
 
@@ -131,23 +221,25 @@ async function generateQR(type) {
                 /^(\d{1,3}\.){3}\d{1,3}$/;
 
 
-            // Local addresses
             const isLocalhost =
                 host === "localhost" ||
                 host === "127.0.0.1";
 
 
-            // Check IPv4 range
             let validIP = false;
+
 
             if (ipRegex.test(host)) {
 
-                const parts = host.split(".").map(Number);
+                const parts =
+                    host.split(".").map(Number);
 
-                validIP = parts.every(
-                    part => part >= 0 && part <= 255
-                );
-
+                validIP =
+                    parts.every(
+                        part =>
+                            part >= 0 &&
+                            part <= 255
+                    );
             }
 
 
@@ -158,14 +250,13 @@ async function generateQR(type) {
             ) {
 
                 error.style.display = "none";
+
                 input.classList.remove("invalid");
 
 
-                /*
-                Google search URL
-                */
-
-                const q = parsed.searchParams.get("q");
+                // Google search URL
+                const q =
+                    parsed.searchParams.get("q");
 
 
                 if (
@@ -200,23 +291,26 @@ async function generateQR(type) {
 
             document.getElementById("qrcode").innerHTML = "";
 
-            document.getElementById("downloadBtn").style.display = "none";
+            document.getElementById("downloadBtn").style.display =
+                "none";
 
             return;
         }
     }
 
 
-    /*
-    ==========================================
-    TEXT
-    ==========================================
-    */
+    /* ==========================================
+       TEXT
+    ========================================== */
 
     else if (type === "text") {
 
         qrData =
-            document.getElementById("textInput").value.trim();
+            document
+                .getElementById("textInput")
+                .value
+                .trim();
+
 
         if (!qrData) {
 
@@ -227,19 +321,23 @@ async function generateQR(type) {
     }
 
 
-    /*
-    ==========================================
-    PHONE
-    ==========================================
-    */
+    /* ==========================================
+       PHONE
+    ========================================== */
 
     else if (type === "phone") {
 
         const name =
-            document.getElementById("phoneName").value.trim();
+            document
+                .getElementById("phoneName")
+                .value
+                .trim();
 
         const number =
-            document.getElementById("phoneNumber").value.trim();
+            document
+                .getElementById("phoneNumber")
+                .value
+                .trim();
 
 
         if (!number) {
@@ -255,16 +353,17 @@ async function generateQR(type) {
     }
 
 
-    /*
-    ==========================================
-    EMAIL
-    ==========================================
-    */
+    /* ==========================================
+       EMAIL
+    ========================================== */
 
     else if (type === "email") {
 
         const email =
-            document.getElementById("emailInput").value.trim();
+            document
+                .getElementById("emailInput")
+                .value
+                .trim();
 
 
         if (!email) {
@@ -279,22 +378,29 @@ async function generateQR(type) {
     }
 
 
-    /*
-    ==========================================
-    CONTACT
-    ==========================================
-    */
+    /* ==========================================
+       CONTACT
+    ========================================== */
 
     else if (type === "contact") {
 
         const name =
-            document.getElementById("contactName").value.trim();
+            document
+                .getElementById("contactName")
+                .value
+                .trim();
 
         const phone =
-            document.getElementById("contactPhone").value.trim();
+            document
+                .getElementById("contactPhone")
+                .value
+                .trim();
 
         const email =
-            document.getElementById("contactEmail").value.trim();
+            document
+                .getElementById("contactEmail")
+                .value
+                .trim();
 
 
         if (!name && !phone && !email) {
@@ -310,173 +416,92 @@ async function generateQR(type) {
     }
 
 
-    /*
-    ==========================================
-    UPI
-    ==========================================
-    */
+    /* ==========================================
+       WIFI
+    ========================================== */
 
-    else if (type === "upi") {
+    else if (type === "wifi") {
 
-        const name =
-            document.getElementById("upiName").value.trim() ||
-            "MERCHANT NAME";
+        const ssid =
+            document
+                .getElementById("wifiSSID")
+                .value
+                .trim();
 
-        const upi =
-            document.getElementById("upiId").value.trim() ||
-            "merchant@upi";
+        const password =
+            document
+                .getElementById("wifiPassword")
+                .value
+                .trim();
 
-        const amount =
-            document.getElementById("upiAmount").value.trim();
+        const security =
+            document
+                .getElementById("wifiSecurity")
+                .value;
+
+        const hidden =
+            document
+                .getElementById("wifiHidden")
+                .checked
+                ? "true"
+                : "false";
 
 
-        /*
-        UPI ID validation
-        */
+        if (!ssid) {
 
-        if (
-            !upi.includes("@") ||
-            upi.startsWith("@") ||
-            upi.endsWith("@")
-        ) {
-
-            alert("Enter a valid UPI ID");
+            alert("Enter WiFi name");
 
             return;
         }
 
 
-        /*
-        Create UPI payment URL
-        */
+        if (security === "nopass") {
 
-        let link =
-            `upi://pay?pa=${encodeURIComponent(upi)}` +
-            `&pn=${encodeURIComponent(name)}` +
-            `&cu=INR`;
+            qrData =
+                `WIFI:S:${ssid};T:nopass;H:${hidden};;`;
+
+        } else {
+
+            if (!password) {
+
+                alert("Enter WiFi password");
+
+                return;
+            }
 
 
-        if (
-            amount &&
-            !isNaN(amount) &&
-            Number(amount) > 0
-        ) {
-
-            link +=
-                `&am=${encodeURIComponent(amount)}`;
-
+            qrData =
+                `WIFI:S:${ssid};` +
+                `T:${security};` +
+                `P:${password};` +
+                `H:${hidden};;`;
         }
-
-
-        /*
-        Hide normal QR preview
-        */
-
-        document.getElementById("qrcode").style.display =
-            "none";
-
-
-        /*
-        Show UPI card
-        */
-
-        document.getElementById("card").style.display =
-            "flex";
-
-
-        /*
-        Card information
-        */
-
-        document.getElementById("cardName").innerText =
-            name.toUpperCase();
-
-        document.getElementById("cardUpi").innerText =
-            upi;
-
-
-        /*
-        Clear previous QR
-        */
-
-        document.getElementById("qr").innerHTML =
-            "";
-
-
-        /*
-        Generate UPI QR
-        */
-
-        const qrCode =
-            new QRCodeStyling({
-
-                width: 300,
-
-                height: 300,
-
-                data: link,
-
-                image: "images/upi.png",
-
-                imageOptions: {
-
-                    crossOrigin: "anonymous",
-
-                    margin: 4,
-
-                    imageSize: 0.22
-
-                },
-
-                dotsOptions: {
-
-                    color: "#000",
-
-                    type: "square"
-
-                },
-
-                backgroundOptions: {
-
-                    color: "#fff"
-
-                }
-
-            });
-
-
-        qrCode.append(
-            document.getElementById("qr")
-        );
-
-
-        /*
-        Show download button
-        */
-
-        document.getElementById("downloadBtn").style.display =
-            "inline-block";
-
-
-        return;
     }
 
-    /*
-    ==========================================
-    WHATSAPP
-    ==========================================
-    */
+
+    /* ==========================================
+       WHATSAPP
+    ========================================== */
 
     else if (type === "whatsapp") {
 
         const name =
-            document.getElementById("whatsappName").value.trim();
+            document
+                .getElementById("whatsappName")
+                .value
+                .trim();
 
         let number =
-            document.getElementById("whatsappNumber").value.trim();
+            document
+                .getElementById("whatsappNumber")
+                .value
+                .trim();
 
         const message =
-            document.getElementById("whatsappMessage").value.trim();
+            document
+                .getElementById("whatsappMessage")
+                .value
+                .trim();
 
 
         if (!name) {
@@ -503,16 +528,13 @@ async function generateQR(type) {
         }
 
 
-        /*
-        Remove common formatting characters
-        */
+        // Remove formatting characters
+        number =
+            number.replace(
+                /[\s\-().+]/g,
+                ""
+            );
 
-        number = number.replace(/[\s\-().+]/g, "");
-
-
-        /*
-        Validate international phone number
-        */
 
         if (!/^\d{8,15}$/.test(number)) {
 
@@ -524,460 +546,199 @@ async function generateQR(type) {
         }
 
 
-        /*
-        Create WhatsApp URL
-
-        The message will be pre-filled when
-        WhatsApp opens.
-        */
-
-        const whatsappURL =
+        qrData =
             `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 
 
-        /*
-        Hide UPI card
-        */
-
-        document.getElementById("card").style.display =
-            "none";
+        // Hide UPI card
+        document
+            .getElementById("card")
+            .style.display = "none";
 
 
-        /*
-        Show normal QR preview
-        */
+        // Show normal QR
+        const qrContainer =
+            document.getElementById("qrcode");
 
-        document.getElementById("qrcode").style.display =
-            "flex";
-
-
-        /*
-        Clear previous QR
-        */
-
-        document.getElementById("qrcode").innerHTML =
-            "";
+        qrContainer.style.display = "flex";
 
 
-        /*
-        Generate QR
-        */
-
-        const qrCode =
-            new QRCodeStyling({
-
-                width: 300,
-
-                height: 300,
-
-                type: "canvas",
-
-                data: whatsappURL,
+        // Generate directly
+        createQRCode(
+            qrContainer,
+            qrData
+        );
 
 
-
-                imageOptions: {
-
-                    crossOrigin: "anonymous",
-
-                    margin: 5,
-
-                    imageSize: 0.25
-
-                },
-
-                dotsOptions: {
-
-                    color: "#000000",
-
-                    type: "square"
-
-                },
-
-                backgroundOptions: {
-
-                    color: "#ffffff"
-
-                }
-
-            });
+        // Show download
+        document
+            .getElementById("downloadBtn")
+            .style.display = "inline-block";
 
 
-        /*
-        Temporary container
-        */
-
-        const tempDiv =
-            document.createElement("div");
+        return;
+    }
 
 
-        qrCode.append(tempDiv);
+    /* ==========================================
+       UPI
+    ========================================== */
+
+    else if (type === "upi") {
+
+        const name =
+            document
+                .getElementById("upiName")
+                .value
+                .trim() ||
+            "MERCHANT NAME";
 
 
-        /*
-        Wait for QR canvas
-        */
-
-        let qrCanvas = null;
-
-        let tries = 0;
+        const upi =
+            document
+                .getElementById("upiId")
+                .value
+                .trim();
 
 
-        while (!qrCanvas && tries < 40) {
-
-            await new Promise(
-                resolve => setTimeout(resolve, 50)
-            );
-
-            qrCanvas =
-                tempDiv.querySelector("canvas");
-
-            tries++;
-
-        }
+        const amount =
+            document
+                .getElementById("upiAmount")
+                .value
+                .trim();
 
 
-        if (!qrCanvas) {
+        if (
+            !upi ||
+            !upi.includes("@") ||
+            upi.startsWith("@") ||
+            upi.endsWith("@")
+        ) {
 
-            alert("QR could not be generated.");
+            alert("Enter a valid UPI ID");
 
             return;
         }
 
 
-        /*
-        Add padding
-        */
-
-        const padding = 20;
-
-
-        const canvas =
-            document.createElement("canvas");
+        let link =
+            `upi://pay?pa=${encodeURIComponent(upi)}` +
+            `&pn=${encodeURIComponent(name)}` +
+            `&cu=INR`;
 
 
-        canvas.width =
-            qrCanvas.width + padding * 2;
+        if (
+            amount &&
+            !isNaN(amount) &&
+            Number(amount) > 0
+        ) {
 
-        canvas.height =
-            qrCanvas.height + padding * 2;
-
-
-        /*
-        Canvas
-        */
-
-        const ctx =
-            canvas.getContext("2d");
+            link +=
+                `&am=${encodeURIComponent(amount)}`;
+        }
 
 
-        ctx.fillStyle = "#ffffff";
-
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-
-        /*
-        Draw QR
-        */
-
-        ctx.drawImage(
-            qrCanvas,
-            padding,
-            padding
-        );
-
-
-        /*
-        Border
-        */
-
-        ctx.strokeStyle = "#000000";
-
-        ctx.lineWidth = 4;
-
-        ctx.strokeRect(
-            2,
-            2,
-            canvas.width - 4,
-            canvas.height - 4
-        );
-
-
-        /*
-        Add QR to preview
-        */
-
+        // Hide normal QR
         document
             .getElementById("qrcode")
-            .appendChild(canvas);
+            .style.display = "none";
 
 
-        /*
-        Show download button
-        */
+        // Show UPI card
+        const card =
+            document.getElementById("card");
 
-        document.getElementById("downloadBtn").style.display =
-            "inline-block";
-
-
-        return;
-    }
+        card.style.display = "flex";
 
 
-    /*
-    ==========================================
-    WIFI
-    ==========================================
-    */
-
-    else if (type === "wifi") {
-
-        const ssid =
-            document.getElementById("wifiSSID").value.trim();
-
-        const password =
-            document.getElementById("wifiPassword").value.trim();
-
-        const security =
-            document.getElementById("wifiSecurity").value;
-
-        const hidden =
-            document.getElementById("wifiHidden").checked
-                ? "true"
-                : "false";
+        // Card information
+        document
+            .getElementById("cardName")
+            .innerText =
+            name.toUpperCase();
 
 
-        if (!ssid) {
-
-            alert("Enter WiFi name");
-
-            return;
-        }
+        document
+            .getElementById("cardUpi")
+            .innerText =
+            upi;
 
 
-        /*
-        WiFi without password
-        */
+        // Clear old UPI QR
+        const qrCard =
+            document.getElementById("qr");
 
-        if (security === "nopass") {
-
-            qrData =
-                `WIFI:S:${ssid};T:nopass;H:${hidden};;`;
-
-        }
+        qrCard.innerHTML = "";
 
 
-        /*
-        WiFi with password
-        */
-
-        else {
-
-            if (!password) {
-
-                alert("Enter WiFi password");
-
-                return;
+        // Create UPI QR
+        createQRCode(
+            qrCard,
+            link,
+            {
+                width: 300,
+                height: 300,
+                image: "images/upi.png",
+                imageMargin: 4,
+                imageSize: 0.22
             }
-
-
-            qrData =
-                `WIFI:S:${ssid};` +
-                `T:${security};` +
-                `P:${password};` +
-                `H:${hidden};;`;
-
-        }
-    }
-
-
-    /*
-    ==========================================
-    NORMAL QR GENERATION
-    ==========================================
-    */
-
-
-    document.getElementById("qrcode").innerHTML = "";
-
-
-    const qrCode =
-        new QRCodeStyling({
-
-            width: 300,
-
-            height: 300,
-
-            type: "canvas",
-
-            data: qrData,
-
-            image: "images/QIFY_LOGO_BLACK.png",
-
-            imageOptions: {
-
-                crossOrigin: "anonymous",
-
-                margin: 5,
-
-                imageSize: 0.25
-
-            },
-
-            dotsOptions: {
-
-                color: "#000000",
-
-                type: "square"
-
-            },
-
-            backgroundOptions: {
-
-                color: "#ffffff"
-
-            }
-
-        });
-
-
-    /*
-    Temporary container
-    */
-
-    const tempDiv =
-        document.createElement("div");
-
-
-    qrCode.append(tempDiv);
-
-
-    /*
-    Wait for canvas
-    */
-
-    let qrCanvas = null;
-
-    let tries = 0;
-
-
-    while (!qrCanvas && tries < 40) {
-
-        await new Promise(
-            resolve => setTimeout(resolve, 50)
         );
 
-        qrCanvas =
-            tempDiv.querySelector("canvas");
 
-        tries++;
+        // Show download
+        document
+            .getElementById("downloadBtn")
+            .style.display = "inline-block";
 
-    }
-
-
-    if (!qrCanvas) {
-
-        alert("QR could not be generated.");
 
         return;
     }
 
 
-    /*
-    Add padding
-    */
+    /* ==========================================
+       NORMAL QR
+    ========================================== */
 
-    const padding = 20;
-
-
-    const canvas =
-        document.createElement("canvas");
+    const qrContainer =
+        document.getElementById("qrcode");
 
 
-    canvas.width =
-        qrCanvas.width + padding * 2;
-
-    canvas.height =
-        qrCanvas.height + padding * 2;
+    const card =
+        document.getElementById("card");
 
 
-    /*
-    Canvas context
-    */
-
-    const ctx =
-        canvas.getContext("2d");
+    // Hide UPI card
+    card.style.display = "none";
 
 
-    /*
-    White background
-    */
+    // Show normal QR
+    qrContainer.style.display = "flex";
 
-    ctx.fillStyle = "#ffffff";
 
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
+    // Generate QR directly
+    createQRCode(
+        qrContainer,
+        qrData,
+        {
+            width: 300,
+            height: 300,
+            image: "images/QIFY_LOGO_BLACK.png",
+            imageMargin: 5,
+            imageSize: 0.25
+        }
     );
 
 
-    /*
-    Draw QR
-    */
-
-    ctx.drawImage(
-        qrCanvas,
-        padding,
-        padding
-    );
-
-
-    /*
-    Border
-    */
-
-    ctx.strokeStyle = "#000000";
-
-    ctx.lineWidth = 4;
-
-    ctx.strokeRect(
-        2,
-        2,
-        canvas.width - 4,
-        canvas.height - 4
-    );
-
-
-    /*
-    Add canvas to page
-    */
-
+    // Show download button
     document
-        .getElementById("qrcode")
-        .appendChild(canvas);
-
-
-    /*
-    Show download button
-    */
-
-    document.getElementById("downloadBtn").style.display =
-        "inline-block";
+        .getElementById("downloadBtn")
+        .style.display = "inline-block";
 }
 
 
-/*
-==========================================
-DOWNLOAD QR
-==========================================
-*/
+/* ==========================================
+   DOWNLOAD QR
+========================================== */
 
 async function downloadQR() {
 
@@ -987,48 +748,43 @@ async function downloadQR() {
 
     btn.disabled = true;
 
-    btn.innerText =
-        "Downloading...";
+    btn.innerText = "Downloading...";
 
 
     const card =
         document.getElementById("card");
 
 
-    /*
-    ==========================================
-    UPI CARD DOWNLOAD
-    ==========================================
-    */
+    /* ==========================================
+       UPI CARD
+    ========================================== */
 
     if (card.style.display !== "none") {
 
         try {
 
             await new Promise(
-                resolve => setTimeout(resolve, 500)
+                resolve =>
+                    setTimeout(resolve, 500)
             );
 
 
             const canvas =
-                await html2canvas(card, {
-
-                    scale: 4,
-
-                    useCORS: true,
-
-                    backgroundColor: null
-
-                });
+                await html2canvas(
+                    card,
+                    {
+                        scale: 4,
+                        useCORS: true,
+                        backgroundColor: null
+                    }
+                );
 
 
             const link =
                 document.createElement("a");
 
 
-            link.download =
-                "UPI_QR.png";
-
+            link.download = "UPI_QR.png";
 
             link.href =
                 canvas.toDataURL("image/png");
@@ -1047,35 +803,32 @@ async function downloadQR() {
             alert(
                 "Could not download the UPI QR."
             );
-
         }
 
 
         btn.disabled = false;
 
-        btn.innerText =
-            "Download QR";
+        btn.innerText = "Download QR";
 
         return;
     }
 
 
-    /*
-    ==========================================
-    NORMAL QR DOWNLOAD
-    ==========================================
-    */
+    /* ==========================================
+       NORMAL QR DOWNLOAD
+    ========================================== */
 
     const qrCanvas =
-        document.querySelector("#qrcode canvas");
+        document.querySelector(
+            "#qrcode canvas"
+        );
 
 
     if (!qrCanvas) {
 
         btn.disabled = false;
 
-        btn.innerText =
-            "Download QR";
+        btn.innerText = "Download QR";
 
         return;
     }
@@ -1087,8 +840,7 @@ async function downloadQR() {
             document.createElement("a");
 
 
-        link.download =
-            "QR.png";
+        link.download = "QIFY_QR.png";
 
 
         link.href =
@@ -1108,31 +860,27 @@ async function downloadQR() {
         alert(
             "Could not download the QR."
         );
-
     }
 
 
     btn.disabled = false;
 
-    btn.innerText =
-        "Download QR";
+    btn.innerText = "Download QR";
 }
 
 
-/*
-==========================================
-INITIALIZE
-==========================================
-*/
+/* ==========================================
+   INITIALIZE
+========================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        // Make URL the default active tab
+        // URL is default
         showForm("url");
 
-        // Set WiFi password visibility
+        // WiFi password visibility
         togglePasswordField();
 
     }
