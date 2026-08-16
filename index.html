@@ -41,7 +41,7 @@
       },
       "sameAs": [
         "https://www.instagram.com/deep_editz____/",
-        "https://www.linkedin.com/in/deep-mistry-founder-of-qify/"
+        "https://www.linkedin.com/in/deep-mistry-founder-of-qify/",
         "https://github.com/deep-mistry10"
       ]
     },
@@ -75,7 +75,7 @@
 <header class="topbar">
     <div class="topbar-inner">
         <a href="/" class="brand" aria-label="QIFY home">
-            <img class="qifylogo" src="images/QIFY_LOGO_BLACK.png">
+            <img class="qifylogo" src="images/QIFY_LOGO_BLACK.png" alt="QIFY" width="35" height="35">
             <span class="brand-name">QIFY</span>
         </a>
 
@@ -97,10 +97,10 @@
 </header>
 
 <main>
-    <section class="hero">
+    <section class="hero" aria-labelledby="hero-title">
         <div class="hero-inner">
             <span class="eyebrow">SIMPLE • FAST • FREE</span>
-            <h1>Create a QR code in seconds</h1>
+            <h1 id="hero-title">Create a QR code in seconds</h1>
             <p>
     Generate QR codes for websites, text, WiFi, UPI payments,
     contacts, email addresses, phone numbers and WhatsApp chats.
@@ -123,15 +123,15 @@
                 </div>
             </div>
 
-            <nav class="tabs" aria-label="QR code type">
-                <button class="tab active" type="button" onclick="showForm('url')">URL</button>
-                <button class="tab" type="button" onclick="showForm('text')">Text</button>
-                <button class="tab" type="button" onclick="showForm('phone')">Mobile</button>
-                <button class="tab" type="button" onclick="showForm('email')">Email</button>
-                <button class="tab" type="button" onclick="showForm('contact')">Contact</button>
-                <button class="tab" type="button" onclick="showForm('wifi')">WiFi</button>
-                <button class="tab" type="button" onclick="showForm('upi')">UPI</button>
-                <button class="tab" type="button" onclick="showForm('whatsapp')">WhatsApp</button>
+            <nav class="tabs" aria-label="QR code type" role="tablist">
+                <button class="tab active" type="button" role="tab" aria-selected="true" onclick="showForm('url')">URL</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" onclick="showForm('text')">Text</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" onclick="showForm('phone')">Mobile</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" onclick="showForm('email')">Email</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" onclick="showForm('contact')">Contact</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" onclick="showForm('wifi')">WiFi</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" onclick="showForm('upi')">UPI</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" onclick="showForm('whatsapp')">WhatsApp</button>
             </nav>
 
             <div class="generator-grid">
