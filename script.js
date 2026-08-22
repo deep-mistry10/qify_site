@@ -322,36 +322,50 @@ async function generateQR(type) {
     }
 
 
-    /* ==========================================
-       PHONE
-    ========================================== */
+/* ==========================================
+   PHONE
+========================================== */
 
-    else if (type === "phone") {
+else if (type === "phone") {
 
-        const name =
-            document
-                .getElementById("phoneName")
-                .value
-                .trim();
+    const name =
+        document
+            .getElementById("phoneName")
+            .value
+            .trim();
 
-        const number =
-            document
-                .getElementById("phoneNumber")
-                .value
-                .trim();
+    let number =
+        document
+            .getElementById("phoneNumber")
+            .value
+            .trim();
 
-
-        if (!number) {
-
-            alert("Enter mobile number");
-
-            return;
-        }
-
-
-        qrData =
-            `Name:${name}\nPhone:${number}`;
+    if (!number) {
+        alert("Enter mobile number");
+        return;
     }
+
+    // Remove spaces, brackets, dashes and parentheses
+    number = number.replace(/[\s()-]/g, "");
+
+    // Keep + only if it is the first character
+    if (number.includes("+") && !number.startsWith("+")) {
+        alert("Enter a valid mobile number");
+        return;
+    }
+
+    // Validate international number
+    const cleanNumber = number.replace("+", "");
+
+    if (!/^\d{8,15}$/.test(cleanNumber)) {
+        alert("Enter a valid mobile number");
+        return;
+    }
+
+    // IMPORTANT:
+    // Mobile QR = tel URI, NOT vCard
+    qrData = `tel:${number}`;
+}
 
 
     /* ==========================================
