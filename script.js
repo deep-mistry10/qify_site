@@ -123,6 +123,7 @@ function createQRCode(container, data, options = {}) {
         type: "canvas",
 
         data: data,
+        margin: options.margin || 15,
 
         image: options.image || undefined,
 
@@ -565,9 +566,16 @@ async function generateQR(type) {
 
         // Generate directly
         createQRCode(
-            qrContainer,
-            qrData
-        );
+    qrContainer,
+    qrData,
+    {
+        width: 300,
+        height: 300,
+        image: "images/whatsapp.png",
+        imageMargin: 5,
+        imageSize: 0.22
+    }
+);
 
 
         // Show download
