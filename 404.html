@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Oops! — QIFY</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --page: #f3f5f2;
+        --surface: #ffffff;
+        --text: #172019;
+        --muted: #68736b;
+        --border: #dce2dd;
+    }
+
+    body {
+        min-height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 24px;
+
+        background: var(--page);
+
+        color: var(--text);
+
+        font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Arial,
+            sans-serif;
+
+        overflow: hidden;
+    }
+
+
+    /* Background */
+
+    .background {
+        position: fixed;
+        inset: 0;
+
+        pointer-events: none;
+
+        background-image:
+            linear-gradient(
+                rgba(23, 32, 25, .025) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                90deg,
+                rgba(23, 32, 25, .025) 1px,
+                transparent 1px
+            );
+
+        background-size: 45px 45px;
+
+        mask-image:
+            radial-gradient(
+                circle at center,
+                black,
+                transparent 75%
+            );
+    }
+
+
+    /* QIFY logo */
+
+    .logo {
+        position: fixed;
+
+        top: 28px;
+        left: 32px;
+
+        font-size: 21px;
+
+        font-weight: 850;
+
+        letter-spacing: -1.5px;
+    }
+
+    .logo::after {
+        content: "";
+
+        display: inline-block;
+
+        width: 6px;
+        height: 6px;
+
+        margin-left: 5px;
+
+        border-radius: 50%;
+
+        background: var(--text);
+
+        vertical-align: middle;
+    }
+
+
+    /* Main */
+
+    .error {
+        position: relative;
+
+        z-index: 2;
+
+        width: min(650px, 100%);
+
+        text-align: center;
+    }
+
+
+    /* OOPS */
+
+    .oops {
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 7px 12px;
+
+        border: 1px solid var(--border);
+
+        border-radius: 100px;
+
+        background: rgba(255,255,255,.6);
+
+        color: var(--muted);
+
+        font-family: monospace;
+
+        font-size: 10px;
+
+        letter-spacing: 1.5px;
+
+        margin-bottom: 25px;
+    }
+
+    .oops-dot {
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: var(--text);
+    }
+
+
+    /* 404 */
+
+    .number {
+        font-size:
+            clamp(120px, 24vw, 220px);
+
+        line-height: .75;
+
+        font-weight: 900;
+
+        letter-spacing: -15px;
+
+        margin-right: 15px;
+
+        color: var(--text);
+    }
+
+
+    /* Heading */
+
+    h1 {
+        margin-top: 38px;
+
+        font-size:
+            clamp(30px, 5vw, 44px);
+
+        line-height: 1;
+
+        letter-spacing: -2.5px;
+
+        font-weight: 800;
+    }
+
+    h1 span {
+        position: relative;
+    }
+
+    h1 span::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        right: 0;
+
+        bottom: -5px;
+
+        height: 2px;
+
+        background: var(--text);
+    }
+
+
+    /* Description */
+
+    p {
+        max-width: 490px;
+
+        margin: 20px auto 0;
+
+        color: var(--muted);
+
+        font-size: 16px;
+
+        line-height: 1.7;
+    }
+
+
+    /* URL */
+
+    .path {
+        display: inline-block;
+
+        max-width: min(520px, 100%);
+
+        margin-top: 22px;
+
+        padding: 9px 14px;
+
+        border: 1px solid var(--border);
+
+        border-radius: 8px;
+
+        background: rgba(255,255,255,.55);
+
+        color: var(--muted);
+
+        font-family: monospace;
+
+        font-size: 11px;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+    }
+
+    .path span {
+        color: var(--text);
+    }
+
+
+    /* Buttons */
+
+    .buttons {
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+
+        margin-top: 27px;
+    }
+
+    .button {
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 13px 20px;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .home {
+        background: var(--text);
+
+        color: white;
+
+        border: 1px solid var(--text);
+    }
+
+    .back {
+        background: white;
+
+        color: var(--text);
+
+        border: 1px solid var(--border);
+    }
+
+    .button:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 12px 25px
+            rgba(23,32,25,.08);
+    }
+
+
+    /* Bottom */
+
+    .footer {
+        position: fixed;
+
+        bottom: 22px;
+
+        left: 50%;
+
+        transform: translateX(-50%);
+
+        color: #9ba39d;
+
+        font-family: monospace;
+
+        font-size: 9px;
+
+        white-space: nowrap;
+
+        letter-spacing: .4px;
+    }
+
+
+    /* Mobile */
+
+    @media (max-width: 600px) {
+
+        .logo {
+            top: 20px;
+            left: 20px;
+        }
+
+        .number {
+            font-size: 125px;
+
+            letter-spacing: -9px;
+        }
+
+        h1 {
+            font-size: 30px;
+
+            letter-spacing: -1.8px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        .footer {
+            bottom: 12px;
+        }
+
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+
+<div class="background"></div>
+
+
+<div class="logo">
+    QIFY
+</div>
+
+
+<main class="error">
+
+
+    <div class="oops">
+
+        <span class="oops-dot"></span>
+
+        OOPS — WRONG TURN
+
+    </div>
+
+
+    <div class="number">
+        404
+    </div>
+
+
+    <h1>
+        Looks like you're
+        <span>lost.</span>
+    </h1>
+
+
+    <p>
+        The page you're looking for isn't here.
+        It may have been moved, deleted, or you
+        simply took a wrong turn.
+    </p>
+
+
+    <div class="path">
+
+        requested:
+
+        <span>
+            /404
+        </span>
+
+    </div>
+
+
+    <div class="buttons">
+
+        <a
+            href="/"
+            class="button home">
+
+            ← Take Me Home
+
+        </a>
+
+
+        <a
+            href="javascript:history.back()"
+            class="button back">
+
+            Go Back
+
+        </a>
+
+    </div>
+
+
+</main>
+
+
+<div class="footer">
+
+    QIFY · 404 · NOTHING TO SEE HERE
+
+</div>
+
+
+</body>
+</html>
